@@ -1,0 +1,179 @@
+# Configuration file for Metabolomics Missing Data Imputation Project
+
+# Project Information
+project:
+  name: "Malaria Metabolomics Imputation Study"
+  version: "1.0.0"
+  description: "Comparative analysis of KNN and EM imputation methods"
+
+# Data Paths
+paths:
+  raw_data: "data/raw/"
+  processed_data: "data/processed/"
+  results: "data/results/"
+  figures: "results/figures/"
+  tables: "results/tables/"
+  logs: "logs/"
+
+# Dataset Information
+dataset:
+  name: "Malaria_mzML"
+  samples:
+    naive: 6
+    semi_immune: 6
+    qc: 3
+  total_files: 15
+  file_format: "mzML"
+
+# Preprocessing Parameters
+preprocessing:
+  # Peak Detection
+  peak_detection:
+    method: "centwave"
+    ppm: 10
+    peakwidth: [5, 20]
+    snthresh: 6
+    prefilter: [3, 100]
+    
+  # Alignment
+  alignment:
+    method: "obiwarp"
+    binSize: 0.25
+    
+  # Normalization
+  normalization:
+    method: "pqn"
+    reference: "qc"
+    
+  # Filtering
+  filtering:
+    min_detection_rate: 0.5
+    qc_rsd_threshold: 30
+    blank_threshold: 5
+    
+  # Transformation
+  transformation:
+    method: "log"
+    scaling: "pareto"
+
+# Missing Data Analysis
+missing_data:
+  pattern_analysis:
+    test_mcar: true
+    visualize: true
+    
+  simulation:
+    enabled: false
+    missing_rates: [0.1, 0.2, 0.3]
+    mechanism: "MAR"
+    seed: 42
+
+# KNN Imputation Parameters
+knn:
+  n_neighbors: 5
+  weights: "distance"
+  metric: "euclidean"
+  param_grid:
+    n_neighbors: [3, 5, 7, 10, 15]
+    weights: ["uniform", "distance"]
+  
+# EM Imputation Parameters
+em:
+  max_iter: 100
+  tol: 1e-4
+  n_init: 10
+  init_method: "knn"
+  
+  regularization:
+    enabled: true
+    lambda: 0.01
+    method: "ridge"
+    
+  covariance_type: "full"
+  handle_mnar: true
+  lod_imputation: true
+
+# Evaluation Metrics
+evaluation:
+  metrics:
+    - "rmse"
+    - "mae"
+    - "r2"
+    - "nrmse"
+    - "mape"
+    
+  cross_validation:
+    enabled: true
+    n_folds: 5
+    n_repeats: 3
+    
+  bootstrap:
+    enabled: true
+    n_iterations: 1000
+    confidence_level: 0.95
+
+# Downstream Analysis
+downstream:
+  pca:
+    n_components: 5
+    scaling: true
+    
+  differential:
+    method: "ttest"
+    alpha: 0.05
+    correction: "fdr_bh"
+    
+  clustering:
+    method: "hierarchical"
+    distance: "euclidean"
+    linkage: "ward"
+    
+  pathway:
+    enabled: true
+    database: "kegg"
+    organism: "hsa"
+
+# Visualization
+visualization:
+  figure:
+    dpi: 300
+    format: "png"
+    style: "seaborn-v0_8-paper"
+    
+  colors:
+    naive: "#3498db"
+    semi_immune: "#e74c3c"
+    qc: "#2ecc71"
+    
+  plots:
+    - "missing_pattern"
+    - "imputation_comparison"
+    - "pca_scores"
+    - "heatmap"
+    - "volcano"
+    - "boxplot"
+    - "density"
+
+# Statistical Testing
+statistics:
+  alpha: 0.05
+  multiple_testing_correction: "fdr_bh"
+  parametric: false
+  
+# Reproducibility
+reproducibility:
+  random_seed: 42
+  save_session_info: true
+  
+# Computational Resources
+computation:
+  n_jobs: -1
+  parallel_backend: "loky"
+  verbose: 1
+
+# Output Settings
+output:
+  save_intermediate: true
+  save_models: true
+  generate_report: true
+  report_format: "html"
