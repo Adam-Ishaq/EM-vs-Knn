@@ -6,8 +6,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setup(
     name="metabolomics-imputation",
     version="1.0.0",
-    author="Your Name",
-    author_email="your.email@example.com",
+    author="Adam Ishaq",
+    author_email="adam.ishaq@std.medipol.edu.tr",
     description="Comparative analysis of KNN and EM imputation for metabolomics data",
     long_description=long_description,
     long_description_content_type="text/markdown",
